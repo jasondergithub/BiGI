@@ -103,7 +103,7 @@ class GraphMaker(object):
         opt["number_item"] = len(self.item)
         self.raw_data = data
         self.UV,self.VU, self.adj, self.UV_rated, self.VU_rated, self.corruption_UV,\
-        self.corruption_VU, self.fake_adj, self.relation_UV_adj = self.preprocess(data,opt)
+        self.corruption_VU, self.fake_adj, self.relation_UV_adj, self.relation_VU_adj = self.preprocess(data,opt)
 
     def preprocess(self,data,opt):
         UV_edges = []
@@ -169,6 +169,7 @@ class GraphMaker(object):
         VU_adj = normalize(VU_adj)
         all_adj = normalize(all_adj)
         relational_UV_rate_adj = normalize(UV_rate_adj)
+        relational_VU_rate_adj = normalize(VU_rate_adj)
         UV_adj = sparse_mx_to_torch_sparse_tensor(UV_adj)
         #print('sparse tensor form UV_adj: {}'.format(UV_adj))
         VU_adj = sparse_mx_to_torch_sparse_tensor(VU_adj)
@@ -177,6 +178,7 @@ class GraphMaker(object):
         
         VU_rate_adj = sparse_mx_to_torch_sparse_tensor(VU_rate_adj)
         relational_UV_rate_adj = sparse_mx_to_torch_sparse_tensor(relational_UV_rate_adj)
+        relational_VU_rate_adj = sparse_mx_to_torch_sparse_tensor(relational_VU_rate_adj)
         #print('real_adj: {}'.format(real_adj[0][3]))
         #print('UV_rate_adj: {}'.format(UV_rate_adj))
         print("real graph loaded!")
@@ -188,5 +190,5 @@ class GraphMaker(object):
         self.item_real_dict = item_real_dict
         self.item_fake_dict = item_fake_dict
         print("fake graph loaded!")
-        return UV_adj,VU_adj, all_adj, UV_rate_adj, VU_rate_adj, corruption_UV_adj, corruption_VU_adj,fake_adj, relational_UV_rate_adj
+        return UV_adj,VU_adj, all_adj, UV_rate_adj, VU_rate_adj, corruption_UV_adj, corruption_VU_adj,fake_adj, relational_UV_rate_adj, relational_VU_rate_adj
 

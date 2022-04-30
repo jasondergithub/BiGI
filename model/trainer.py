@@ -144,7 +144,7 @@ class DGITrainer(Trainer):
         ans = ans.view(tmp)
         return ans
 
-    def reconstruct(self, UV, VU, UV_rated, VU_rated, relation_UV_adj, adj, CUV, CVU, fake_adj, user_feature, item_feature, batch):
+    def reconstruct(self, UV, VU, UV_rated, VU_rated, relation_UV_adj, relation_VU_adj, adj, CUV, CVU, fake_adj, user_feature, item_feature, batch):
         self.model.train()
         self.optimizer.zero_grad()
 
@@ -199,9 +199,10 @@ class DGITrainer(Trainer):
 
 
         else :
-            #最後面新增3個參數
+            #最後面新增4個參數
             Prob, Label = self.model.DGI(self.user_hidden_out, self.item_hidden_out, fake_user_hidden_out,
-                                         fake_item_hidden_out, UV, VU, CUV, CVU, user_One, item_One, UV_rated, VU_rated, relation_UV_adj)
+                                         fake_item_hidden_out, UV, VU, CUV, CVU, user_One, item_One, UV_rated, VU_rated,
+                                          relation_UV_adj, relation_VU_adj)
             dgi_loss = self.criterion(Prob, Label)
             loss = (1 - self.opt["lambda"]) * reconstruct_loss + self.opt["lambda"] * dgi_loss
             self.epoch_rec_loss.append((1 - self.opt["lambda"]) * reconstruct_loss.item())

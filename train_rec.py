@@ -89,6 +89,7 @@ UV = G.UV
 UV_rated = G.UV_rated
 VU_rated = G.VU_rated
 relation_UV_adj = G.relation_UV_adj
+relation_VU_adj = G.relation_VU_adj
 VU = G.VU
 adj = G.adj
 corruption_UV = G.corruption_UV
@@ -127,6 +128,8 @@ if opt["cuda"]:
     VU = VU.cuda()
     UV_rated = UV_rated.cuda()
     VU_rated = VU_rated.cuda()
+    relation_UV_adj = relation_UV_adj.cuda()
+    relation_VU_adj = relation_VU_adj.cuda()
     adj = adj.cuda()
     fake_adj = fake_adj.cuda()
     corruption_UV = corruption_UV.cuda()
@@ -164,9 +167,11 @@ for epoch in range(1, opt['num_epoch'] + 1):
     start_time = time.time()
     for i, batch in enumerate(train_batch):
         global_step += 1
-        loss = trainer.reconstruct(UV, VU, UV_rated, VU_rated, relation_UV_adj, adj, corruption_UV, corruption_VU, fake_adj, user_feature, item_feature, batch)  # [ [user_list], [item_list], [neg_item_list] ]
+        loss = trainer.reconstruct(UV, VU, UV_rated, VU_rated, relation_UV_adj, relation_VU_adj, adj, corruption_UV, corruption_VU,
+         fake_adj, user_feature, item_feature, batch)  # [ [user_list], [item_list], [neg_item_list] ]
         train_loss += loss
-
+        
+    
     duration = time.time() - start_time
     print(format_str.format(datetime.now(), global_step, max_steps, epoch, \
                                     opt['num_epoch'], train_loss/len(train_batch), duration, current_lr))
